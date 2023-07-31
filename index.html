@@ -1,73 +1,46 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages,yup, india.</p>
+<h1>CS 416 Data Visualization Project</h1>
 </body>
 </html>
 
 <html>
-<script src='https://d3js.org/d3.v5.min.js'></script>
-<style> circle {fill: lightblue; stroke: black;} </style>
-<body onload='init()'>
-<svg width=300 height=300>
-</svg>
-<script>
-async function init() {
-const response = await d3.csv("https://flunky.github.io/cars2017.csv");
+<script src="https://d3js.org/d3.v5.min.js"></script>
 
-const data = response.map((d) => ({
-        cityMPG: +d["AverageCityMPG"],
-        highwayMPG: +d["AverageHighwayMPG"],
-        cylinders: +d["EngineCylinders"]
-      }));
 
-      const svg = d3.select('svg');
-        const width = +svg.attr('width');
-        const height = +svg.attr('height');
-        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-        const innerWidth = 300 - margin.left - margin.right;
-        const innerHeight = 300 - margin.top - margin.bottom;
-        
-        const xScale = d3.scaleLog()
-          .domain([10, 150])
-          .range([0, innerWidth])
-          .base(10);
-        
-        const yScale = d3.scaleLog()
-          .domain([10, 150])
-          .range([innerHeight, 0])
-          .base(10);
-        
-        
-        const xAxis = d3.axisBottom(xScale)
-          .tickValues([10, 20, 50, 100])
-          .tickFormat(d3.format("~s"));
-        
-        const yAxis = d3.axisLeft(yScale)
-          .tickValues([10, 20, 50, 100])
-          .tickFormat(d3.format("~s"));
-        
-        const g = svg.append('g')
-          .attr('transform', `translate(${margin.left},${margin.top})`);
-        
-        g.selectAll('circle')
-          .data(data)
-          .enter()
-          .append('circle')
-          .attr('cx', d => xScale(d.cityMPG))
-          .attr('cy', d => yScale(d.highwayMPG))
-          .attr('r', d => 2+ d.cylinders);
-        
-          svg.append('g')
-          .attr("transform", "translate(50,50)")
-          .call(yAxis);
+    <h1 id="intro">MPG Data for Cars - 2017</h1>
+    <div>
+        <span class="times new roman"> Prannoy Kathiresan </span>
+        <hr>
+        <img src="car.png" alt=" " width="400" height="250">
+        <p>
+        </p>
+        <span class="times new roman"> Tesla Cybertruck </span>
+        <hr>
+        <h3>
+            This project is based on automobile manufacturers' data from 2017. The dataset consists of various car models from different manufacturers and their corresponding engine cylinders, along with the car's MPG (Fuel Efficiency) for both city and highway driving zones. The data reveals correlations between the number of cylinders in a car, its fuel type, and ultimately, its fuel efficiency in different driving zones. Let's delve into some critical details in the following scenes. (            <a href="https://flunky.github.io/cars2017.csv">Link for data</a>)
+        </h3>
+        <ul>
+            <li>
+                <a href="first page.html" class="contents"> General correlation between Avg City MPG and Avg Highway MPG with the number of cylinders</a>
+            </li>
+            <li>
+                <a href="second page.html" class="contents">How the number of cylinders influences Avg Highway MPG for different automobile manufacturers ?</a>
+            </li>
+            <li>
+                <a href="third page.html" class="contents">How the number of cylinders influences Avg City MPG for different automobile manufacturers ?</a>    
+            </li>
+            <li>
+                <a href="fourth page.html" class="contents">Fuel efficiency with respect to different car manufacturers</a>
+            </li>
+        </ul>
+        <hr>
 
-         svg.append('g')
-          .attr('transform', `translate(50,250)`)
-          .call(xAxis);
-
-  }
-</script>
-</body>
+    </div>
+    
+<html>
+<p>
+</p>
+<a href="first page.html" class="back">Next</a>
 </html>
