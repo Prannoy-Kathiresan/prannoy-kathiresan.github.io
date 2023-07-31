@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1 id="first">General correlation between Avg City MPG and Avg Highway MPG with the number of cylinders</h1>
+<p> The scatter plot shown below is based upon three quantitative variables and gives you a rough overview on the fuel efficiency of different cars. Feel free to hover around the scatter plot to get a general overview. The average city MPG and average highway MPG are plotted on a logarithmic scale along the horizontal and vertical axes, respectively. The radius of each circle is determined by adding 2 to the number of cylinders for that entry. As we can see from the plot, the greater the number of cylinders, the lower the fuel efficiency along the city and highway zones, and conversely, the lower the cylinders, the higher the fuel efficiency. Let's delve deeper on this in the subsequent scenes. </p>
+</body>
+</html>
+
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
+<style> circle {fill: lightblue; stroke: black;}
+       .tooltip{ position: absolute;
+        padding: 8px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        pointer-events: none;
+        font-size: 12px;} 
+</style>
+<body onload='init()'>
+<div class="tooltip" style="display: none;"></div>    
+<svg width=500 height=500>
+</svg>
+<script>
+async function init() {
+const response = await d3.csv("https://flunky.github.io/cars2017.csv");
+
+console.log(response);
+
+const data = response.map((d) =>({
+        Make: d["Make"],
+        Fuel: d["Fuel"],
+        cityMPG: +d["AverageCityMPG"],
+        highwayMPG: +d["AverageHighwayMPG"],
+        cylinders: +d["EngineCylinders"]
+      }));
+
+      const svg = d3.select('svg');
+        const width = +svg.attr('width');
+        const height = +svg.attr('height');
+        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+        const innerWidth = 500 - margin.left - margin.right;
+        const innerHeight = 500 - margin.top - margin.bottom;
+        
+        const xScale = d3.scaleLog()
+          .domain([10, 150])
+          .range([0, innerWidth])
+          .base(10);
+        
+        const yScale = d3.scaleLog()
+          .domain([10, 150])
+          .range([innerHeight, 0])
+          .base(10);
+        
+        
+        const xAxis = d3.axisBottom(xScale)
+          .tickValues([10, 20, 50, 100])
+          .tickFormat(d3.format("~s"));
+        
+        const yAxis = d3.axisLeft(yScale)
+          .tickValues([10, 20, 50, 100])
+          .tickFormat(d3.format("~s"));
+        
+        const g = svg.append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+        
+        const tooltip = d3.select('.tooltip');  
+
+        g.selectAll('circle')
+          .data(data)
+          .enter()
+          .append('circle')
+          .attr('cx', d => xScale(d.cityMPG))
+          .attr('cy', d => yScale(d.highwayMPG))
+          .attr('r', d => 2+ d.cylinders)
+          .on('mouseover', function (d, i) {
+            tooltip.style('display', 'block').html(
+                `<strong>Make:</strong> ${d.Make}<br>
+                <strong>City MPG:</strong> ${d3.format(".2f")(d.cityMPG)}<br>
+                <strong>Highway MPG:</strong> ${d3.format(".2f")(d.highwayMPG)}<br>
+                <strong>Cylinders:</strong> ${d.cylinders}`
+            );
+          })
+          .on('mousemove', function (d) {
+            tooltip.style('left', d3.event.pageX + 10 + 'px').style('top', d3.event.pageY - 10 + 'px');
+          })
+          .on('mouseout', function () {
+            tooltip.style('display', 'none');
+          });
+        
+          svg.append('g')
+          .attr("transform", "translate(50,50)")
+          .call(yAxis);
+
+         svg.append('g')
+          .attr('transform', `translate(50,450)`)
+          .call(xAxis);
+
+         svg.append('text')
+          .attr('x', -250)
+          .attr('y', 15)
+           .attr('transform', 'rotate(-90)')
+           .attr('text-anchor', 'middle')
+           .text('Average highway MPG')
+
+         svg.append('text')
+          .attr('x', 250)
+          .attr('y', 490)
+          .attr('text-anchor', 'middle')
+          .text('Average city MPG') 
+         
+          const annotations = d3.annotation()
+            .type(d3.annotationCalloutElbow)
+            .annotations(data.filter(d => d.cityMPG === d3.min(data, d => d.cityMPG)).map(d => ({
+                note: { label: "The car with lowest city MPG" },
+                x: xScale(d.cityMPG),
+                y: yScale(d.highwayMPG),
+                dx: 100,
+                dy: 20,
+                color: "green",
+                subject: {
+                radius: 2 + d.cylinders,
+                radiusPadding: 5
+                }
+            })));
+
+            g.append("g")
+            .attr("class", "annotation-group")
+            .call(annotations);
+  }
+</script>
+</body>
+</html>
+
+<html>
+ <p></p>   
+<a href="index.html" class="back">Back</a>
+<a href="second page.html" class="back">Next</a>
+</html>

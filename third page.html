@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1 id="third">How the number of cylinders influences Avg City MPG for different automobile manufacturers ?</h1>
+<p> The scatter plot above illustrates the relationship between the number of cylinders in cars and their average city MPG (Miles Per Gallon). Each circle represents a specific car make, with the X-axis displaying the average city MPG and the Y-axis representing the number of cylinders in the car's engine. The size of each circle corresponds to the number of cylinders, allowing us to easily distinguish various engine sizes. By hovering over a circle, a tooltip appears, providing details about the car make, number of cylinders, and average city MPG. The plot highlights a general trend that cars with fewer cylinders tend to have better fuel efficiency in city driving, while cars with more cylinders typically exhibit lower fuel efficiency. </p>
+</body>
+</html>
+<hr>
+
+<html>
+<head>
+  <title>Scatter Plot</title>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
+  <style>
+  <style>
+    circle {
+      fill: lightblue;
+      stroke: black;
+    }
+    .tooltip {
+      position: absolute;
+      padding: 8px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Scatter Plot: Average City MPG vs. Number of Cylinders</h1>
+  <div id="chart"></div>
+  <script>
+    async function init() {
+      const response = await d3.csv("https://flunky.github.io/cars2017.csv");
+
+      const data = response.map((d) => ({
+        make: d["Make"],
+        cylinders: +d["EngineCylinders"],
+        cityMPG: +d["AverageCityMPG"]
+      }));
+
+      const svgWidth = 600;
+      const svgHeight = 400;
+      const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+      const chartWidth = svgWidth - margin.left - margin.right;
+      const chartHeight = svgHeight - margin.top - margin.bottom;
+
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.cityMPG)])
+        .range([0, chartWidth]);
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.cylinders) + 2])
+        .range([chartHeight, 0]);
+
+      const svg = d3.select('#chart')
+        .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight);
+
+      const chart = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const tooltip = d3.select('body').append('div')
+        .attr('class', 'tooltip')
+        .style('display', 'none');
+
+      chart.selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('cx', d => xScale(d.cityMPG))
+        .attr('cy', d => yScale(d.cylinders))
+        .attr('r', 5)
+        .style('fill', 'lightblue')
+        .style('stroke', 'black')
+        .on('mouseover', function (d, i) {
+          tooltip.style('display', 'block').html(
+            `<strong>Make:</strong> ${d.make}<br>
+             <strong>Cylinders:</strong>${d.cylinders}<br>
+             <strong>city MPG:</strong> ${d.cityMPG}`
+          );
+        })
+        .on('mousemove', function (d) {
+          tooltip.style('left', d3.event.pageX + 10 + 'px').style('top', d3.event.pageY - 10 + 'px');
+        })
+        .on('mouseout', function () {
+          tooltip.style('display', 'none');
+        });
+
+      const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
+
+      chart.append('g')
+        .attr('transform', `translate(0, ${chartHeight})`)
+        .call(xAxis);
+
+      chart.append('g')
+        .call(yAxis);
+
+      chart.append('text')
+        .attr('x', chartWidth / 2)
+        .attr('y', chartHeight + margin.bottom - 10)
+        .style('text-anchor', 'middle')
+        .text('Average City MPG');
+
+      chart.append('text')
+        .attr('x', -chartHeight / 2)
+        .attr('y', -margin.left + 10)
+        .style('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .text('Number of Cylinders');
+      
+        const annotations = d3.annotation()
+        .type(d3.annotationCalloutElbow)
+        .annotations(data.filter(d => d.cityMPG === d3.min(data, d => d.cityMPG)).map(d => ({
+          note: { label: "Lowest MPG car" },
+          x: xScale(d.cityMPG),
+          y: yScale(d.cylinders),
+          dx: 50,
+          dy: -20,
+          color: "red",
+          subject: {
+            radius: 10,
+            radiusPadding: 10
+          }
+        })));
+
+      chart.append("g")
+        .attr("class", "annotation-group")
+        .call(annotations);   
+        
+   
+
+    }
+
+  init();  
+  </script>
+</body>
+</html>
+
+<html>
+<p>
+</p>
+<a href="second page.html" class="back">Back</a>
+<a href="fourth page.html" class="back">Next</a>
+<a href="index.html" class="back">Back to Introduction</a>     
+</html>
