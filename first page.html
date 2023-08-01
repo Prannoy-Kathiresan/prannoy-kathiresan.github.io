@@ -76,6 +76,7 @@ const data = response.map((d) =>({
           .on('mouseover', function (d, i) {
             tooltip.style('display', 'block').html(
                 `<strong>Make:</strong> ${d.Make}<br>
+                <strong>Fuel:</strong> ${d.Fuel}<br>
                 <strong>City MPG:</strong> ${d3.format(".2f")(d.cityMPG)}<br>
                 <strong>Highway MPG:</strong> ${d3.format(".2f")(d.highwayMPG)}<br>
                 <strong>Cylinders:</strong> ${d.cylinders}`
