@@ -38,6 +38,7 @@
 
       const data = response.map((d) => ({
         make: d["Make"],
+        Fuel: d["Fuel"],
         cylinders: +d["EngineCylinders"],
         cityMPG: +d["AverageCityMPG"]
       }));
@@ -80,6 +81,7 @@
         .on('mouseover', function (d, i) {
           tooltip.style('display', 'block').html(
             `<strong>Make:</strong> ${d.make}<br>
+             <strong>Fuel:</strong> ${d.Fuel}<br>
              <strong>Cylinders:</strong>${d.cylinders}<br>
              <strong>city MPG:</strong> ${d.cityMPG}`
           );
